@@ -5,6 +5,7 @@
  * 
  */
  include('cadenashelper.php');
+
  include('config.php');
 
  // Se se especificaron los datos desde el punto de Venta
@@ -19,7 +20,6 @@
     $code_ok = 200;
 
  	$code_error = 500;
-
 
     $datos_ticket = $_POST;    
     
@@ -45,7 +45,7 @@
          $ch->izquierdaFix(substr($value['art_nombre'],0,18),18)
         .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
         .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
-        .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8);
+        .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
     }
 
     $contenido_ticket .= "\r\n";
@@ -53,13 +53,19 @@
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     $contenido_ticket .= $ch->derecha(strval(number_format($datos_ticket['productos_total'],2, '.', '')))."\r\n";
     // Total en Letra
-    $contenido_ticket .= "(".$ch->izquierda($datos_ticket['productos_total_letra']).")"."\r\n";
+    $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
 
     $contenido_ticket .= "                  Impuestos: ".$ch->derechaFix("0.00",10)."\r\n";
     $contenido_ticket .= "                 Ud. ahorro: ".$ch->derechaFix("0.00",10)."\r\n"."\r\n";
 
-    // Total CompraCambio
-    $contenido_ticket .= "T.C.".$ch->derechaFix(strval(number_format($datos_ticket['tc'],2, '.', '')),35)."\r\n";
+    if($datos_ticket['pago_efectivo']!=0){
+
+        $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
+    }
+    if($datos_ticket['pago_tarjeta']!=0){
+            
+        $contenido_ticket .= "Pago Tarjeta Credito:".$ch->derechaFix(strval(number_format($datos_ticket['pago_tarjeta'],2, '.', '')),18)."\r\n";
+    }
     // Division
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     // Pago y     // Total de los productos
@@ -81,7 +87,7 @@
     /* Mandar el texto a imprimir al print JOB */            
     if(printer_write($impresora, $contenido_ticket)){            
 
-        echo json_encode(array('message'=>$message,'data'=>$datos_ticket,'status'=> $code_ok));
+        echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     }
     else{    
 

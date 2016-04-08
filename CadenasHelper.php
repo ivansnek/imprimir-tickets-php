@@ -15,7 +15,7 @@
 		 * @return string
 		 */
     	public function centrar($cadena){
-        	return str_pad($cadena,$this->MAX_CARACTERES," ",STR_PAD_BOTH);
+        	return str_pad($cadena, $this->MAX_CARACTERES, " ", STR_PAD_BOTH);
      	}
 
      	/*
@@ -27,7 +27,7 @@
 		 * @return string
 		 */
     	public function centrarFix($cadena, $numeroCaracteres){
-        	return str_pad($cadena,$numeroCaracteres," ",STR_PAD_BOTH);
+        	return str_pad($cadena, $numeroCaracteres, " " , STR_PAD_BOTH);
      	}
 
      	/*
@@ -38,7 +38,7 @@
 		 * @return string
 		 */
      	public function derecha($cadena){
-        	return str_pad($cadena,$this->MAX_CARACTERES," ",STR_PAD_LEFT);
+        	return str_pad($cadena, $this->MAX_CARACTERES, " ", STR_PAD_LEFT);
      	}
 
      	/*
@@ -50,7 +50,7 @@
 		 * @return string
 		 */
      	public function derechaFix($cadena, $numeroCaracteres){
-        	return str_pad($cadena,$numeroCaracteres," ",STR_PAD_LEFT);
+        	return str_pad($cadena, $numeroCaracteres, " " , STR_PAD_LEFT);
      	}
 
      	/*
@@ -61,7 +61,7 @@
 		 * @return string
 		 */
      	public function izquierda($cadena){
-        	return str_pad($cadena,$this->MAX_CARACTERES," ",STR_PAD_RIGHT);
+        	return str_pad($cadena, $this->MAX_CARACTERES, " ", STR_PAD_RIGHT);
      	}
 
      	/*
@@ -72,8 +72,8 @@
 		 * @param $numeroCaracteres
 		 * @return string
 		 */
-     	public function izquierdaFix($cadena,  $numeroCaracteres){
-        	return str_pad($cadena,$numeroCaracteres," ",STR_PAD_RIGHT);
+     	public function izquierdaFix($cadena, $numeroCaracteres){
+        	return str_pad($cadena, $numeroCaracteres, " ", STR_PAD_RIGHT);
      	}
  }
 

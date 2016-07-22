@@ -35,7 +35,7 @@
     $ch->centrar("EN: ".$datos_ticket['sucursal_calle']." ".$datos_ticket['sucursal_numero']." ".$datos_ticket['sucursal_colonia'])."\r\n"."\r\n".
     $ch->centrar("PUNTO DE VENTA")."\r\n"."\r\n".
     "Nota de Venta: ".$datos_ticket['ov_codigo']."\r\n"."\r\n".
-	(isset($datos_ticket['cancelacion']) && $datos_ticket['cancelacion'] == true ? "*************  Devolucion *************\r\n" :"").
+	(isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? "*************  Devolucion *************\r\n" :"").
     "--------------------------------------"."\r\n".
     "Descripcion        Cant. Pr.Un. Importe"."\r\n".
     "--------------------------------------"."\r\n";
@@ -48,11 +48,13 @@
         .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
         .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
         .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
-        if(null !== $value['cancelado'] && ($value['cancelado'] == "1" || $value['cancelado'] == '1' || $value['cancelado'] == 1)){
-            $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)
-            .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
-            .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
-            .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
+        if(isset($value['cancelado'])){
+            if(($value['cancelado'] == "1" || $value['cancelado'] == '1' || $value['cancelado'] == 1)){
+                $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)
+                .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
+                .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
+                .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
+            }
         }
     }
 
@@ -88,12 +90,12 @@
 
 
     /* Abrir la conexion a la impresora */
-    //$impresora = printer_open(constant('IMPRESORA'));
+    $impresora = printer_open(constant('IMPRESORA'));
     
     header('Content-type: application/json');
-	echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-    /* Mandar el texto a imprimir al print JOB */            
-    /*if(printer_write($impresora, $contenido_ticket)){            
+	//echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+    // Mandar el texto a imprimir al print JOB */            
+    if(printer_write($impresora, $contenido_ticket)){            
 
         echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     }
@@ -101,10 +103,10 @@
 
         echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));    
 
-    }*/
+    }
 
     /* Cerrar Conexion */
-    //printer_close($impresora);
+    printer_close($impresora);
 
  }
  

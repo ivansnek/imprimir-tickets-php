@@ -90,12 +90,12 @@
 
 
     /* Abrir la conexion a la impresora */
-    $impresora = printer_open(constant('IMPRESORA'));
+    //$impresora = printer_open(constant('IMPRESORA'));
     
-    header('Content-type: application/json');
-	//echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+    //header('Content-type: application/json');
+	echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     // Mandar el texto a imprimir al print JOB */            
-    if(printer_write($impresora, $contenido_ticket)){            
+    /*if(printer_write($impresora, $contenido_ticket)){            
 
         echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     }
@@ -103,7 +103,7 @@
 
         echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));    
 
-    }
+    }*/
 
     /* Cerrar Conexion */
     printer_close($impresora);

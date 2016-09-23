@@ -61,12 +61,16 @@
     $contenido_ticket .= "\r\n";
     // Separador
     $contenido_ticket .= $ch->derecha("======")."\r\n";
-    $contenido_ticket .= $ch->derecha(strval(number_format($datos_ticket['productos_total'],2, '.', '')))."\r\n";
+    $contenido_ticket .= $ch->derecha("Subtotal  ".strval(number_format($datos_ticket['productos_total'],2, '.', '')))."\r\n";
+    $contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n";
+    $contenido_ticket .= $ch->derecha("Descuento  ".$datos_ticket['descuento_venta'])."\r\n";
+     $contenido_ticket .= $ch->derecha("===================")."\r\n";
+    $contenido_ticket .= $ch->derecha("Total a pagar  ".$datos_ticket['total_con_descuento'])."\r\n";
     // Total en Letra
     $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
 
-    $contenido_ticket .= "                  Impuestos: ".$ch->derechaFix("0.00",10)."\r\n";
-    $contenido_ticket .= "                 Ud. ahorro: ".$ch->derechaFix("0.00",10)."\r\n"."\r\n";
+    //$contenido_ticket .= "                  Impuestos: ".$ch->derechaFix("0.00",10)."\r\n";
+    //$contenido_ticket .= "                 Ud. ahorro: ".$ch->derechaFix("0.00",10)."\r\n"."\r\n";
 
     if($datos_ticket['pago_efectivo']!=0){
 
@@ -90,23 +94,23 @@
 
 
     /* Abrir la conexion a la impresora */
-    $impresora = printer_open(constant('IMPRESORA'));
+    //$impresora = printer_open(constant('IMPRESORA'));
     
     header('Content-type: application/json');
 	//echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     // Mandar el texto a imprimir al print JOB */            
-    if(printer_write($impresora, $contenido_ticket)){            
+    //if(printer_write($impresora, $contenido_ticket)){
 
         echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-    }
+   /* }
     else{    
 
         echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));    
 
-    }
+    }*/
 
     /* Cerrar Conexion */
-    printer_close($impresora);
+   // printer_close($impresora);
 
  }
  

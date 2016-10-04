@@ -7,6 +7,7 @@
  include('cadenashelper.php');
 
  include('config.php');
+ set_time_limit(500000);
 
  // Se se especificaron los datos desde el punto de Venta
  if(isset($_POST)){
@@ -48,24 +49,24 @@
         .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
         .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
         .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
-        if(isset($value['cancelado'])){
+        /*if(isset($value['cancelado'])){
             if(($value['cancelado'] == "1" || $value['cancelado'] == '1' || $value['cancelado'] == 1)){
                 $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)
                 .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
                 .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
                 .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
             }
-        }
+        }*/
     }
 
     $contenido_ticket .= "\r\n";
     // Separador
     $contenido_ticket .= $ch->derecha("======")."\r\n";
-    $contenido_ticket .= $ch->derecha("Subtotal  ".strval(number_format($datos_ticket['productos_total'],2, '.', '')))."\r\n";
+    $contenido_ticket .= $ch->derecha("Subtotal  ".(isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))): strval(number_format($datos_ticket['productos_total'],2, '.', ''))))."\r\n";
     $contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n";
     $contenido_ticket .= $ch->derecha("Descuento  ".$datos_ticket['descuento_venta'])."\r\n";
      $contenido_ticket .= $ch->derecha("===================")."\r\n";
-    $contenido_ticket .= $ch->derecha("Total a pagar  ".$datos_ticket['total_con_descuento'])."\r\n";
+    $contenido_ticket .= $ch->derecha("Total a pagar  ".(isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? ('-'.$datos_ticket['total_con_descuento']): $datos_ticket['total_con_descuento']))."\r\n";
     // Total en Letra
     $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
 
@@ -84,8 +85,8 @@
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     // Pago y     // Total de los productos
 
-    $contenido_ticket .= "Total Pago:".$ch->derechaFix(strval(number_format($datos_ticket['total_pago'],2, '.', '')),28)."\r\n";
-    $contenido_ticket .= "Cambio:".$ch->derechaFix(strval(number_format($datos_ticket['cambio'],2, '.', '')),32)."\r\n";
+    $contenido_ticket .= "Total Pago:".$ch->derechaFix(( isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))) : strval(number_format($datos_ticket['total_pago'],2, '.', ''))),28)."\r\n";
+    $contenido_ticket .= "Cambio:".$ch->derechaFix((isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? '0.00': strval(number_format($datos_ticket['cambio'],2, '.', ''))),32)."\r\n";
     $contenido_ticket .= "Total de Articulos: ".$ch->izquierda(strval(number_format($datos_ticket['total_articulos'],2, '.', '')))."\r\n";
     $contenido_ticket .= "Cajero: ".$ch->izquierda($datos_ticket['usuario'])."\r\n"."\r\n";
     // Pie de Tickect

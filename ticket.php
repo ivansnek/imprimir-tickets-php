@@ -66,9 +66,14 @@
     $contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n";
     $contenido_ticket .= $ch->derecha("Descuento  ".$datos_ticket['descuento_venta'])."\r\n";
      $contenido_ticket .= $ch->derecha("===================")."\r\n";
+<<<<<<< HEAD
     $contenido_ticket .= $ch->derecha("Total a pagar  ".(isset($datos_ticket['cancelado']) && $datos_ticket['cancelado'] == 'true' ? ('-'.$datos_ticket['total_con_descuento']): $datos_ticket['total_con_descuento']))."\r\n";
+=======
+    $contenido_ticket .= $ch->derecha("Total a pagar  ".strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))."\r\n";
+>>>>>>> origin/master
     // Total en Letra
     $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
+	
 
     //$contenido_ticket .= "                  Impuestos: ".$ch->derechaFix("0.00",10)."\r\n";
     //$contenido_ticket .= "                 Ud. ahorro: ".$ch->derechaFix("0.00",10)."\r\n"."\r\n";

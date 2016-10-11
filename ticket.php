@@ -69,10 +69,25 @@
     // Separador
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     $contenido_ticket .= $ch->derecha("Subtotal  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))): strval(number_format($datos_ticket['productos_total'],2, '.', ''))))."\r\n";
-    $contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n";
-    $contenido_ticket .= $ch->derecha("Descuento  ".$datos_ticket['descuento_venta'])."\r\n";
-     $contenido_ticket .= $ch->derecha("===================")."\r\n";
-    $contenido_ticket .= $ch->derecha("Total a pagar  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' ? ('-'.$datos_ticket['total_con_descuento']): $datos_ticket['total_con_descuento']))."\r\n";
+	if($datos_ticket['promocion'] != "") {
+		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
+		$contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n\r\n";	  
+		// Datos de articulos que se agregregan a la promocion
+		if(array_key_exists('articulosPromocion', $datos_ticket) && count($datos_ticket['articulosPromocion']) > 0) {
+			foreach ($datos_ticket['articulosPromocion'] as $key => $value) {
+				$contenido_ticket .= 
+				$ch->izquierdaFix(substr($value['art_nombre'],0,18),18)
+				.$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
+				.$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
+				.$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
+			}
+		}
+		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
+	}  
+	
+    $contenido_ticket .= $ch->derecha("Descuento    ".strval(number_format($datos_ticket['descuento_venta'],2, '.', '')))."\r\n";
+    $contenido_ticket .= $ch->derecha("===================")."\r\n";	
+    $contenido_ticket .= $ch->derecha("Total a pagar  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' ? ('-'.strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))) : strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))))."\r\n";
     // Total en Letra
     $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
 

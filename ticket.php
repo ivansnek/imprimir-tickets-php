@@ -2,7 +2,7 @@
  /**
  * Author: Ivan Eusebio
  * Date:   21/10/2015
- * 
+ *
  */
  include('cadenashelper.php');
 
@@ -14,19 +14,19 @@
 
     $ch = new CadenasHelper();
 
-    $message = 'Se imprimio el Ticket'; 
+    $message = 'Se imprimio el Ticket';
 
- 	$message_error = 'Ocurrio un error al imprimir el Ticket'; 
+ 	$message_error = 'Ocurrio un error al imprimir el Ticket';
 
     $code_ok = 200;
 
  	$code_error = 500;
 
-    $datos_ticket = $_POST;    
+    $datos_ticket = $_POST;
 
-    
+
     //Armar cabecera del Ticket
-    $contenido_ticket = 
+    $contenido_ticket =
     $ch->centrar($datos_ticket['empresa_nombre'])."\r\n".
     $ch->centrar("RFC: ".$datos_ticket['empresa_rfc'])."\r\n".
     $ch->centrar($datos_ticket['empresa_calle']." ".$datos_ticket['empresa_numero'])."\r\n".
@@ -50,7 +50,7 @@
     // Iterar sobre los productos de la venta
 
     foreach ($datos_ticket['productos'] as $key => $value) {
-        $contenido_ticket .= 
+        $contenido_ticket .=
          $ch->izquierdaFix(($value['cantidad'] > 0 ? substr($value['art_nombre'],0,18) : ('-'.substr($value['art_nombre'], 0, 18))), 18)
         .$ch->derechaFix(strval(abs(number_format($value['cantidad'],2, '.', ''))), 6)
         .$ch->derechaFix(strval(abs(number_format($value['precio'],2, '.', ''))), 7)
@@ -71,11 +71,11 @@
     $contenido_ticket .= $ch->derecha("Subtotal  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))): strval(number_format($datos_ticket['productos_total'],2, '.', ''))))."\r\n";
 	if($datos_ticket['promocion'] != "") {
 		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
-		$contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n\r\n";	  
+		$contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n\r\n";
 		// Datos de articulos que se agregregan a la promocion
 		if(array_key_exists('articulosPromocion', $datos_ticket) && count($datos_ticket['articulosPromocion']) > 0) {
 			foreach ($datos_ticket['articulosPromocion'] as $key => $value) {
-				$contenido_ticket .= 
+				$contenido_ticket .=
 				$ch->izquierdaFix(substr($value['art_nombre'],0,18),18)
 				.$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
 				.$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
@@ -83,10 +83,10 @@
 			}
 		}
 		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
-	}  
-	
+	}
+
     $contenido_ticket .= $ch->derecha("Descuento    ".strval(number_format($datos_ticket['descuento_venta'],2, '.', '')))."\r\n";
-    $contenido_ticket .= $ch->derecha("===================")."\r\n";	
+    $contenido_ticket .= $ch->derecha("===================")."\r\n";
     $contenido_ticket .= $ch->derecha("Total a pagar  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' ? ('-'.strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))) : strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))))."\r\n";
     // Total en Letra
     $contenido_ticket .= $ch->izquierda("(".$datos_ticket['productos_total_letra'].")")."\r\n";
@@ -99,7 +99,7 @@
         $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
     }
     if($datos_ticket['pago_tarjeta']!=0){
-            
+
         $contenido_ticket .= "Pago Tarjeta Credito:".$ch->derechaFix(strval(number_format($datos_ticket['pago_tarjeta'],2, '.', '')),18)."\r\n";
     }
     // Division
@@ -112,28 +112,28 @@
     $contenido_ticket .= "Cajero: ".$ch->izquierda($datos_ticket['usuario'])."\r\n"."\r\n";
     // Pie de Tickect
     $contenido_ticket .= "**************************************"."\r\n"."*".$ch->centrarFix("GRACIAS POR SU PREFERENCIA",37)."*"."\r\n"
-    ."*".$ch->centrarFix("FUE UN PLACER ATENDERLE",37)."*"."\r\n"."**************************************";    
+    ."*".$ch->centrarFix("FUE UN PLACER ATENDERLE",37)."*"."\r\n"."**************************************";
 
 
     /* Abrir la conexion a la impresora */
-    //$impresora = printer_open(constant('IMPRESORA'));
-    
-    //header('Content-type: application/json');
-	echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-    // Mandar el texto a imprimir al print JOB */            
-    /*if(printer_write($impresora, $contenido_ticket)){
+    $impresora = printer_open(constant('IMPRESORA'));
+
+    header('Content-type: application/json');
+
+    // Mandar el texto a imprimir al print JOB */
+    if(printer_write($impresora, $contenido_ticket)){
 
         echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
     }
-    else{    
+    else{
 
-        echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));    
+        echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
 
-    }*/
+    }
 
     /* Cerrar Conexion */
-   //printer_close($impresora);
+   printer_close($impresora);
 
  }
- 
+
 ?>

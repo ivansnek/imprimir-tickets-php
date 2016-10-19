@@ -49,28 +49,31 @@
 
     // Iterar sobre los productos de la venta
 
-    foreach ($datos_ticket['productos'] as $key => $value) {
-        $contenido_ticket .=
-         $ch->izquierdaFix(($value['cantidad'] > 0 ? substr($value['art_nombre'],0,18) : ('-'.substr($value['art_nombre'], 0, 18))), 18)
-        .$ch->derechaFix(strval(abs(number_format($value['cantidad'],2, '.', ''))), 6)
-        .$ch->derechaFix(strval(abs(number_format($value['precio'],2, '.', ''))), 7)
-        .$ch->derechaFix(strval(abs(number_format($value['total'],2, '.', ''))), 8)."\r\n";
-        /*if(isset($value['ov_devolucion'])){
-            if(($value['ov_devolucion'] == "1" || $value['ov_devolucion'] == '1' || $value['ov_devolucion'] == 1)){
-                $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)
-                .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
-                .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
-                .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
-            }
-        }*/
+    if(isset($datos_ticket['productos']) && count($datos_ticket['productos']) > 0){
+        foreach ($datos_ticket['productos'] as $key => $value) {
+            $contenido_ticket .=
+                $ch->izquierdaFix(($value['cantidad'] > 0 ? substr($value['art_nombre'],0,18) : ('-'.substr($value['art_nombre'], 0, 18))), 18)
+                .$ch->derechaFix(strval(abs(number_format($value['cantidad'],2, '.', ''))), 6)
+                .$ch->derechaFix(strval(abs(number_format($value['precio'],2, '.', ''))), 7)
+                .$ch->derechaFix(strval(abs(number_format($value['total'],2, '.', ''))), 8)."\r\n";
+            /*if(isset($value['ov_devolucion'])){
+                if(($value['ov_devolucion'] == "1" || $value['ov_devolucion'] == '1' || $value['ov_devolucion'] == 1)){
+                    $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)
+                    .$ch->derechaFix(strval(number_format($value['cantidad'],2, '.', '')), 6)
+                    .$ch->derechaFix(strval(number_format($value['precio'],2, '.', '')), 7)
+                    .$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
+                }
+            }*/
+        }
     }
+
 
     $contenido_ticket .= "\r\n";
     // Separador
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     $contenido_ticket .= $ch->derecha("Subtotal  ".(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' || ($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true') ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))): strval(number_format($datos_ticket['productos_total'],2, '.', ''))))."\r\n";
 	if($datos_ticket['promocion'] != "") {
-		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
+		$contenido_ticket .= "**************************************"."\r\n";
 		$contenido_ticket .= $ch->derecha($datos_ticket['promocion'])."\r\n\r\n";
 		// Datos de articulos que se agregregan a la promocion
 		if(array_key_exists('articulosPromocion', $datos_ticket) && count($datos_ticket['articulosPromocion']) > 0) {
@@ -82,7 +85,7 @@
 				.$ch->derechaFix(strval(number_format($value['total'],2, '.', '')), 8)."\r\n";
 			}
 		}
-		$contenido_ticket .= "´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´"."\r\n";
+		$contenido_ticket .= "**************************************"."\r\n";
 	}
 
     $contenido_ticket .= $ch->derecha("Descuento    ".strval(number_format($datos_ticket['descuento_venta'],2, '.', '')))."\r\n";
@@ -96,7 +99,7 @@
 
     if($datos_ticket['pago_efectivo']!=0){
 
-        $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true') ? ('-'.strval(number_format($datos_ticket['pago_efectivo'],2, '.', ''))) : strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
+        $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true' || $datos_ticket['ov_ticketstatus'] == 'true') || (isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true') ? ('-'.strval(number_format($datos_ticket['pago_efectivo'],2, '.', ''))) : strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
     }
     if($datos_ticket['pago_tarjeta']!=0){
 
@@ -105,9 +108,9 @@
     // Division
     $contenido_ticket .= $ch->derecha("======")."\r\n";
     // Pago y     // Total de los productos
-	//$contenido_ticket .= "Total Pago:".$ch->derechaFix((isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' || ($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true') ? ('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))) : strval(number_format($datos_ticket['total_pago'],2, '.', ''))),28)."\r\n";
+	//$contenido_ticket .= "Total Pago:".$ch->derechaFix((isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' || ($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true') ? ('-'.strval(number_format($datos_ticket['total_pago'],2, '.', ''))) : strval(number_format($datos_ticket['total_pago'],2, '.', ''))),28)."\r\n";
 	if(isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true' || ($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true')){
-		$contenido_ticket .= "Total Pago:".$ch->derechaFix(('-'.strval(number_format($datos_ticket['productos_total'],2, '.', ''))),28)."\r\n";
+		$contenido_ticket .= "Total Pago:".$ch->derechaFix(('-'.strval(number_format($datos_ticket['total_con_descuento'],2, '.', ''))),28)."\r\n";
 	}else{
 		$contenido_ticket .= "Total Pago:".$ch->derechaFix(strval(number_format($datos_ticket['total_pago'],2, '.', '')),28)."\r\n";
 		//strval(number_format($datos_ticket['total_pago'],2, '.', ''))

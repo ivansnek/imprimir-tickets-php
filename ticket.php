@@ -122,27 +122,60 @@
     // Pie de Tickect
     $contenido_ticket .= "**************************************"."\r\n"."*".$ch->centrarFix("GRACIAS POR SU PREFERENCIA",37)."*"."\r\n"
     ."*".$ch->centrarFix("FUE UN PLACER ATENDERLE",37)."*"."\r\n"."**************************************";
+	
+	header('Content-type: application/json');
+	
+	/* Abrir la conexion a la impresora */	
+	if(printerExist()){			
+	
+		$impresora = printer_open(constant('IMPRESORA'));
+		// Mandar el texto a imprimir al print JOB */
+		if(printer_write($impresora, $contenido_ticket)){
 
+			echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+		}
+		else{
 
-    /* Abrir la conexion a la impresora */
-    $impresora = printer_open(constant('IMPRESORA'));
+			echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
 
-    header('Content-type: application/json');
-	//echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-    // Mandar el texto a imprimir al print JOB */
-    if(printer_write($impresora, $contenido_ticket)){
+		}
 
-        echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-    }
-    else{
+		/* Cerrar Conexion */
+		printer_close($impresora);
+	}
+	else {
+		header('HTTP/1.1 500 Internal Server Error');
+		echo json_encode(array('message'=>'No se pudo acceder a la impresora','data'=>$contenido_ticket,'status'=> $code_error));
+	}
 
-        echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
+ }
+ 
+ /**
+ * Validar si existe una impresora configurada y es la que esta descrita en el archivo de config.php
+ */
+ 
+ function printerExist(){
 
-    }
-
-    /* Cerrar Conexion */
-   printer_close($impresora);
-
+	$impresoras = printer_list(PRINTER_ENUM_LOCAL | PRINTER_ENUM_SHARED);
+	 
+	if(count($impresoras) == 0 || $impresoras == ""){
+		 return false;
+	}
+	else {
+		
+		$existe = 0;
+		
+		$impresorasData = serialize($impresoras);
+		
+		$impresoras = unserialize($impresorasData);
+		
+		foreach ($impresoras as $impresora) {
+			if ($impresora["NAME"] == constant('IMPRESORA')) {
+				$existe++;
+			}
+		}
+		return $existe > 0;
+	}
  }
 
 ?>

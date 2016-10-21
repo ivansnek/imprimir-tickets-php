@@ -99,7 +99,7 @@
 
     if($datos_ticket['pago_efectivo']!=0){
 
-        $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true' || $datos_ticket['ov_ticketstatus'] == 'true') || (isset($datos_ticket['ov_devolucion']) && $datos_ticket['ov_devolucion'] == 'true') ? ('-'.strval(number_format($datos_ticket['pago_efectivo'],2, '.', ''))) : strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
+        $contenido_ticket .= "Pago Efectivo:".$ch->derechaFix(($datos_ticket['ov_ticketstatus'] == 1 || $datos_ticket['ov_ticketstatus'] == 'true' || $datos_ticket['ov_ticketstatus'] == 'true') ? ('-'.strval(number_format($datos_ticket['pago_efectivo'],2, '.', ''))) : strval(number_format($datos_ticket['pago_efectivo'],2, '.', '')),25)."\r\n";
     }
     if($datos_ticket['pago_tarjeta']!=0){
 
@@ -126,10 +126,10 @@
 	header('Content-type: application/json');
 	
 	/* Abrir la conexion a la impresora */	
-	if(printerExist()){			
+	if(printerExist()){           
 	
 		$impresora = printer_open(constant('IMPRESORA'));
-		// Mandar el texto a imprimir al print JOB */
+		// Mandar el texto a imprimir al print JOB
 		if(printer_write($impresora, $contenido_ticket)){
 
 			echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
@@ -140,7 +140,7 @@
 
 		}
 
-		/* Cerrar Conexion */
+		// Cerrar Conexion
 		printer_close($impresora);
 	}
 	else {

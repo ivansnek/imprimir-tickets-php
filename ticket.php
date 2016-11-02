@@ -126,26 +126,32 @@
 	header('Content-type: application/json');
 	
 	/* Abrir la conexion a la impresora */	
-	if(printerExist()){           
-	
-		$impresora = printer_open(constant('IMPRESORA'));
-		// Mandar el texto a imprimir al print JOB
-		if(printer_write($impresora, $contenido_ticket)){
+	if(extension_loaded ("printer")){
+		if(printerExist()){           
+		
+			$impresora = printer_open(constant('IMPRESORA'));
+			// Mandar el texto a imprimir al print JOB
+			//if(printer_write($impresora, $contenido_ticket)){
 
-			echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+				echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+			//}
+			//else{
+
+				//echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
+
+			//}
+
+			// Cerrar Conexion
+			printer_close($impresora);
 		}
-		else{
-
-			echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
-
+		else {
+			header('HTTP/1.1 500 Internal Server Error');
+			echo json_encode(array('message'=>'No se pudo acceder a la impresora','data'=>$contenido_ticket,'status'=> $code_error));
 		}
-
-		// Cerrar Conexion
-		printer_close($impresora);
 	}
 	else {
 		header('HTTP/1.1 500 Internal Server Error');
-		echo json_encode(array('message'=>'No se pudo acceder a la impresora','data'=>$contenido_ticket,'status'=> $code_error));
+		echo json_encode(array('message'=>'El servidor de impresión no esta configurado.','data'=>$contenido_ticket,'status'=> $code_error));
 	}
 
  }
@@ -156,7 +162,7 @@
  
  function printerExist(){
 
-	$impresoras = printer_list(PRINTER_ENUM_LOCAL | PRINTER_ENUM_SHARED);
+	$impresoras = printer_list(PRINTER_ENUM_LOCAL);
 	 
 	if(count($impresoras) == 0 || $impresoras == ""){
 		 return false;

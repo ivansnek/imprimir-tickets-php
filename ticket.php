@@ -131,15 +131,15 @@
 		
 			$impresora = printer_open(constant('IMPRESORA'));
 			// Mandar el texto a imprimir al print JOB
-			//if(printer_write($impresora, $contenido_ticket)){
+			if(printer_write($impresora, $contenido_ticket)){
 
 				echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
-			//}
-			//else{
+			}
+			else{
 
-				//echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
+				echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
 
-			//}
+			}
 
 			// Cerrar Conexion
 			printer_close($impresora);

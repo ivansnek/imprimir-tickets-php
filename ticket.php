@@ -53,9 +53,9 @@
         foreach ($datos_ticket['productos'] as $key => $value) {
             $contenido_ticket .=
                 $ch->izquierdaFix(($value['cantidad'] > 0 ? substr($value['art_nombre'],0,18) : ('-'.substr($value['art_nombre'], 0, 18))), 18)
-                .$ch->derechaFix(strval(abs(number_format($value['cantidad'],2, '.', ''))), 6)
-                .$ch->derechaFix(strval(abs(number_format($value['precio'],2, '.', ''))), 7)
-                .$ch->derechaFix(strval(abs(number_format($value['total'],2, '.', ''))), 8)."\r\n";
+                 .$ch->derechaFix(strval(number_format(abs($value['cantidad']),2, '.', '')), 6)
+                .$ch->derechaFix(strval(number_format(abs($value['precio']),2, '.', '')), 7)
+                .$ch->derechaFix(strval(number_format(abs($value['total']),2, '.', '')), 8)."\r\n";
             /*if(isset($value['ov_devolucion'])){
                 if(($value['ov_devolucion'] == "1" || $value['ov_devolucion'] == '1' || $value['ov_devolucion'] == 1)){
                     $contenido_ticket .= $ch->izquierdaFix('-'.substr($value['art_nombre'],0,17),18)

@@ -27,7 +27,10 @@
 
     //Armar cabecera del Ticket
     $contenido_ticket =
-    $ch->centrar($datos_ticket['empresa_nombre'])."\r\n".
+	$ch->centrar("")."\r\n".
+	$ch->centrar("")."\r\n".
+	$ch->centrar("")."\r\n".
+    $ch->centrar($datos_ticket['empresa_nombre'])."\r\n".    
     $ch->centrar("RFC: ".$datos_ticket['empresa_rfc'])."\r\n".
     $ch->centrar($datos_ticket['empresa_calle']." ".$datos_ticket['empresa_numero'])."\r\n".
     $ch->centrar($datos_ticket['empresa_colonia']." ".$datos_ticket['empresa_cp'])."\r\n".
@@ -122,6 +125,7 @@
     // Pie de Tickect
     $contenido_ticket .= "**************************************"."\r\n"."*".$ch->centrarFix("GRACIAS POR SU PREFERENCIA",37)."*"."\r\n"
     ."*".$ch->centrarFix("FUE UN PLACER ATENDERLE",37)."*"."\r\n"."**************************************";
+	
 	
 	header('Content-type: application/json');
 	

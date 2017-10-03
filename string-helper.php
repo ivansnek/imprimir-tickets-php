@@ -2,7 +2,7 @@
 	/**
 	* Clase auxiliar para el manejo de las cadenas que son enviadas a imprimir en el ticket/corte	
 	*/	
-	class CadenasHelper{
+	class StringHelper {
 
 		/*Numero maximo de caracteres en cada linea para el Ticket*/
 		public $MAX_CARACTERES = 39;

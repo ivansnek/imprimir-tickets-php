@@ -4,15 +4,14 @@
  * Date:   21/10/2015
  *
  */
- include('cadenashelper.php');
-
+ include('string-helper.php');
  include('config.php');
  set_time_limit(500000);
 
  // Se se especificaron los datos desde el punto de Venta
  if(isset($_POST)){
 
-    $ch = new CadenasHelper();
+    $ch = new StringHelper();
 
     $message = 'Se imprimio el Ticket';
 
@@ -23,7 +22,6 @@
  	$code_error = 500;
 
     $datos_ticket = $_POST;
-
 
     //Armar cabecera del Ticket
     $contenido_ticket =
@@ -131,31 +129,42 @@
 	
 	/* Abrir la conexion a la impresora */	
 	if(extension_loaded ("printer")){
-		if(printerExist()){           
-		
+		if(printerExist()){           		
 			$impresora = printer_open(constant('IMPRESORA'));
 			// Mandar el texto a imprimir al print JOB
 			if(printer_write($impresora, $contenido_ticket)){
-
-				echo json_encode(array('message'=>$message,'data'=>$contenido_ticket,'status'=> $code_ok));
+				echo json_encode([
+                    'message' => $message,
+                    'data' => $contenido_ticket,
+                    'status' => $code_ok
+                ]);
 			}
 			else{
-
-				echo json_encode(array('message'=>$message_error,array(),'status'=> $code_error));
-
+				echo json_encode([
+                    'message' => $message_error, 
+                    'data' => [],
+                    'status'=> $code_error
+                ]);
 			}
-
 			// Cerrar Conexion
 			printer_close($impresora);
 		}
 		else {
 			header('HTTP/1.1 500 Internal Server Error');
-			echo json_encode(array('message'=>'No se pudo acceder a la impresora','data'=>$contenido_ticket,'status'=> $code_error));
+			echo json_encode([
+                'message' => 'No se pudo acceder a la impresora',
+                'data' => $contenido_ticket,
+                'status' => $code_error
+            ]);
 		}
 	}
 	else {
 		header('HTTP/1.1 500 Internal Server Error');
-		echo json_encode(array('message'=>'El servidor de impresión no esta configurado.','data'=>$contenido_ticket,'status'=> $code_error));
+		echo json_encode([
+            'message' =>'El servidor de impresión no esta configurado.',
+            'data' => $contenido_ticket,
+            'status' => $code_error
+        ]);
 	}
 
  }
